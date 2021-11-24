@@ -1,8 +1,8 @@
 import React from 'react';
 
-const UsersListView: React.FC = () => {
+function UsersListView() {
     const x = 1;
-    return <p>UsersListView component</p>
+    return <p>UsersListView {x} component</p>
 }
 
 export default UsersListView;
