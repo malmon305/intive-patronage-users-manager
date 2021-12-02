@@ -4,11 +4,12 @@ import { Box, Button, Container, Toolbar, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { Link } from 'react-router-dom';
 
+// https://github.com/mui-org/material-ui/issues/27149
 const useStyles = makeStyles({
   headerLink: {
-    color: 'white',
-    margin: '0 0 0 30px',
-    fontSize: '18px'
+    color: 'white!important',
+    margin: '3px 15px 0 0!important',
+    fontSize: '18px!important'
   }
 });
 
@@ -20,7 +21,7 @@ function Header() {
     },
     {
       label: 'NEW USER',
-      href: '/NewUser'
+      href: '/edit'
     }
   ];
 
@@ -34,11 +35,13 @@ function Header() {
             <Typography variant="h6" noWrap>
               USER MANAGER
             </Typography>
-            {headerLinks.map(({ label, href }) => (
-              <Button variant="text" key={label} component={Link} to={href} replace className={classes.headerLink}>
-                {label}
-              </Button>
-            ))}
+            <Box ml="50px">
+              {headerLinks.map(({ label, href }) => (
+                <Button key={label} color="warning" component={Link} to={href} replace className={classes.headerLink}>
+                  {label}
+                </Button>
+              ))}
+            </Box>
           </Box>
         </Toolbar>
       </Container>
