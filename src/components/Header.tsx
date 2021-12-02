@@ -33,7 +33,7 @@ function Header() {
         <Toolbar>
           <Box display="flex" flexGrow={1} alignItems="center">
             <Typography variant="h6" noWrap>
-              USER MANAGER
+              USERS MANAGER
             </Typography>
             <Box ml="50px">
               {headerLinks.map(({ label, href }) => (
