@@ -9,7 +9,7 @@ import UsersListView from 'views/UsersListView';
 
 const darkTheme = createTheme({
   palette: {
-    mode: 'dark'
+    mode: 'light'
   }
 });
 
