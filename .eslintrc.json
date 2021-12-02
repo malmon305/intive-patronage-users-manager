@@ -1,42 +1,43 @@
 {
-    "env": {
-        "browser": true,
-        "es2021": true
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": ["airbnb", "airbnb-typescript", "prettier"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
     },
-    "extends": ["airbnb","airbnb-typescript","prettier"],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true
-        },
-        "ecmaVersion": 12,
-        "sourceType": "module",
-        "project": ["tsconfig.json"]
-    },
-    "plugins": ["react","@typescript-eslint"],
-    "rules": {
-        // note you must disable the base rule as it can report incorrect errors
-        "no-use-before-define": "off",
-        "@typescript-eslint/no-use-before-define": ["error"],
-        "react/jsx-filename-extension": [
-            2,
-            {
-              "extensions": [".js", ".jsx", ".ts", ".tsx"]
-            }
-          ],
-          "react/function-component-definition": [
-            2,
-            {
-              "namedComponents": "function-declaration"
-            }
-          ]
-    },
-    "settings": {
-      "import/resolver": {
-        "node": {
-          "paths": ["src"],
-          "extensions": [".js", ".jsx", ".ts", ".tsx"]
-        }
+    "ecmaVersion": 12,
+    "sourceType": "module",
+    "project": ["tsconfig.json"]
+  },
+  "plugins": ["react", "@typescript-eslint"],
+  "rules": {
+    "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
+    "@typescript-eslint/lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }],
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": ["error"],
+    "react/jsx-filename-extension": [
+      2,
+      {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    ],
+    "react/function-component-definition": [
+      2,
+      {
+        "namedComponents": "function-declaration"
+      }
+    ]
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "paths": ["src/**/*"],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     }
+  }
 }
