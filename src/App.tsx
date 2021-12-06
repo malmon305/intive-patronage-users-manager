@@ -7,7 +7,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import UserEditView from 'views/UserEditView';
 import UsersListView from 'views/UsersListView';
 
-const darkTheme = createTheme({
+const theme = createTheme({
   palette: {
     mode: 'light'
   }
@@ -15,12 +15,12 @@ const darkTheme = createTheme({
 
 function App() {
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <div className="App">
         <Router>
           <Header />
-          <Container>
+          <Container maxWidth="xl">
             <Suspense fallback={<div>Loading...</div>}>
               <Routes>
                 <Route path="/" element={<UsersListView />} />
