@@ -12,7 +12,7 @@ export interface Cell<T> {
   numeric: boolean;
 }
 
-export function TableHeadCell<T>(props: TableHeadCellProperties<T>) {
+export function EnhancedTableHeadCell<T>(props: TableHeadCellProperties<T>) {
   const { cell, orderBy, order, onClick } = props;
 
   return (
