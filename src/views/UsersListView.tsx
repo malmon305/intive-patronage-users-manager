@@ -16,7 +16,10 @@ import UsersService from 'services/UsersService';
 import UsersListSkeleton from 'components/skeletons/UsersListSkeleton';
 import HobbiesService from 'services/HobbiesService';
 import Hobby from 'services/models/Hobby';
-import { Chip, Skeleton } from '@mui/material';
+import { Chip, IconButton, Skeleton, Tooltip } from '@mui/material';
+import { blue, red } from '@mui/material/colors';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const userCells: readonly Cell<User>[] = [
   {
@@ -41,7 +44,7 @@ const userCells: readonly Cell<User>[] = [
     numeric: true,
     disablePadding: false,
     label: 'Age',
-    width: '5%'
+    width: '1%'
   },
   {
     id: 'gender',
@@ -49,7 +52,7 @@ const userCells: readonly Cell<User>[] = [
     numeric: false,
     disablePadding: false,
     label: 'Gender',
-    width: '1%'
+    width: '5%'
   },
   {
     id: 'phoneNumber',
@@ -57,7 +60,7 @@ const userCells: readonly Cell<User>[] = [
     numeric: false,
     disablePadding: false,
     label: 'Phone number',
-    width: '11%'
+    width: '10%'
   },
   {
     id: 'address',
@@ -65,7 +68,7 @@ const userCells: readonly Cell<User>[] = [
     numeric: false,
     disablePadding: false,
     label: 'Address',
-    width: '15%'
+    width: '23%'
   },
   {
     id: 'dateOfBirth',
@@ -73,7 +76,7 @@ const userCells: readonly Cell<User>[] = [
     numeric: false,
     disablePadding: false,
     label: 'Date of birth',
-    width: '12%'
+    width: '10%'
   },
   {
     id: 'hobbies',
@@ -82,6 +85,14 @@ const userCells: readonly Cell<User>[] = [
     disablePadding: false,
     label: 'Hobbies',
     width: '20%'
+  },
+  {
+    id: 'action',
+    sortable: false,
+    numeric: true,
+    disablePadding: false,
+    label: 'Actions',
+    width: '10%'
   }
 ];
 
@@ -163,7 +174,7 @@ function UsersListView() {
               order={order}
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
+              onRequestSort={(event, property) => handleRequestSort(event, property as keyof User)}
               rowCount={users.length}
             />
             <TableBody>
@@ -196,13 +207,13 @@ function UsersListView() {
                       <TableCell component="th" id={labelId} scope="row" padding="none">
                         {row.name}
                       </TableCell>
-                      <TableCell align="left">{row.email}</TableCell>
+                      <TableCell>{row.email}</TableCell>
                       <TableCell align="right">{row.age}</TableCell>
-                      <TableCell align="left">{row.gender}</TableCell>
-                      <TableCell align="left">{row.phoneNumber}</TableCell>
-                      <TableCell align="left">{row.address}</TableCell>
-                      <TableCell align="left">{row.dateOfBirth}</TableCell>
-                      <TableCell align="left">
+                      <TableCell>{row.gender}</TableCell>
+                      <TableCell>{row.phoneNumber}</TableCell>
+                      <TableCell>{row.address}</TableCell>
+                      <TableCell>{row.dateOfBirth}</TableCell>
+                      <TableCell>
                         {isLoadingHobbies ? (
                           <Skeleton animation="wave" height={100} />
                         ) : (
@@ -216,6 +227,18 @@ function UsersListView() {
                             />
                           ))
                         )}
+                      </TableCell>
+                      <TableCell align="right">
+                        <Tooltip title="Edit User">
+                          <IconButton aria-label="edit">
+                            <EditIcon sx={{ color: blue[600] }} />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete User">
+                          <IconButton aria-label="delete">
+                            <DeleteIcon sx={{ color: red[600] }} />
+                          </IconButton>
+                        </Tooltip>
                       </TableCell>
                     </TableRow>
                   );

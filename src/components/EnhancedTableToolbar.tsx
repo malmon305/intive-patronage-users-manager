@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Toolbar, alpha, Typography, Tooltip, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import { red } from '@mui/material/colors';
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { numSelected } = props;
@@ -28,7 +29,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
       {numSelected > 0 ? (
         <Tooltip title="Delete">
           <IconButton>
-            <DeleteIcon />
+            <DeleteIcon sx={{ color: red[600] }} />
           </IconButton>
         </Tooltip>
       ) : (

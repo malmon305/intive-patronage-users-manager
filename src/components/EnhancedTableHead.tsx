@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { TableHead, TableRow, TableCell, Checkbox } from '@mui/material';
-import { Cell, EnhancedTableHeadCell, Order } from './EnhancedTableHeadCell';
+import { Cell, CellId, EnhancedTableHeadCell, Order } from './EnhancedTableHeadCell';
 
 export interface EnhancedTableHeadProps<T> {
   numSelected: number;
-  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof T) => void;
+  onRequestSort: (event: React.MouseEvent<unknown>, property: CellId<T>) => void;
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   order: Order;
-  orderBy: keyof T;
+  orderBy: CellId<T>;
   rowCount: number;
   cells: readonly Cell<T>[];
 }

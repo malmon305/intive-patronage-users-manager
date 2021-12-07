@@ -2,12 +2,14 @@ import * as React from 'react';
 import { Box, TableCell, TableSortLabel } from '@mui/material';
 import { visuallyHidden } from '@mui/utils';
 
+export type CellId<T> = keyof T | 'action';
+
 export type Order = 'asc' | 'desc';
 
 export interface Cell<T> {
   disablePadding: boolean;
   sortable: boolean;
-  id: keyof T;
+  id: CellId<T>;
   label: string;
   numeric: boolean;
   width?: string | number | undefined;
@@ -41,7 +43,7 @@ export function EnhancedTableHeadCell<T>(props: TableHeadCellProperties<T>) {
 
 interface TableHeadCellProperties<T> {
   cell: Cell<T>;
-  orderBy: keyof T;
+  orderBy: CellId<T>;
   order: Order;
   onClick: (event: React.MouseEvent<unknown>) => void;
 }
