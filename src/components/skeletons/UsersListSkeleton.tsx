@@ -25,7 +25,7 @@ function UsersListView() {
         <TableContainer>
           <Table>
             <TableBody>
-              {Array.from({ length: 8 }, (_, index) => (
+              {Array.from({ length: 9 }, (_, index) => (
                 <TableRow key={index}>
                   <TableCell padding="checkbox">
                     <TableCellSkeleton width={38} />

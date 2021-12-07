@@ -10,6 +10,7 @@ export interface Cell<T> {
   id: keyof T;
   label: string;
   numeric: boolean;
+  width?: string | number | undefined;
 }
 
 export function EnhancedTableHeadCell<T>(props: TableHeadCellProperties<T>) {
@@ -17,6 +18,7 @@ export function EnhancedTableHeadCell<T>(props: TableHeadCellProperties<T>) {
 
   return (
     <TableCell
+      width={cell.width}
       align={cell.numeric ? 'right' : 'left'}
       padding={cell.disablePadding ? 'none' : 'normal'}
       sortDirection={orderBy === cell.id ? order : false}

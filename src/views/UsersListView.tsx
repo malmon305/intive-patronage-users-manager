@@ -14,6 +14,9 @@ import EnhancedTableToolbar from 'components/EnhancedTableToolbar';
 import useLoading from 'hooks/useLoading';
 import UsersService from 'services/UsersService';
 import UsersListSkeleton from 'components/skeletons/UsersListSkeleton';
+import HobbiesService from 'services/HobbiesService';
+import Hobby from 'services/models/Hobby';
+import { Chip, Skeleton } from '@mui/material';
 
 const userCells: readonly Cell<User>[] = [
   {
@@ -21,57 +24,64 @@ const userCells: readonly Cell<User>[] = [
     sortable: true,
     numeric: false,
     disablePadding: true,
-    label: 'Name'
+    label: 'Name',
+    width: '10%'
   },
   {
     id: 'email',
     sortable: true,
     numeric: false,
     disablePadding: false,
-    label: 'Email'
+    label: 'Email',
+    width: '1%'
   },
   {
     id: 'age',
     sortable: true,
     numeric: true,
     disablePadding: false,
-    label: 'Age'
+    label: 'Age',
+    width: '5%'
   },
   {
     id: 'gender',
     sortable: false,
     numeric: false,
-    disablePadding: true,
-    label: 'Gender'
+    disablePadding: false,
+    label: 'Gender',
+    width: '1%'
   },
   {
     id: 'phoneNumber',
     sortable: false,
     numeric: false,
     disablePadding: false,
-    label: 'Phone number'
+    label: 'Phone number',
+    width: '11%'
   },
   {
     id: 'address',
     sortable: true,
     numeric: false,
     disablePadding: false,
-    label: 'Address'
+    label: 'Address',
+    width: '15%'
   },
   {
     id: 'dateOfBirth',
     sortable: true,
     numeric: false,
     disablePadding: false,
-    label: 'Date of birth'
+    label: 'Date of birth',
+    width: '12%'
   },
   {
     id: 'hobbies',
-
     sortable: false,
     numeric: false,
     disablePadding: false,
-    label: 'Hobbies'
+    label: 'Hobbies',
+    width: '20%'
   }
 ];
 
@@ -95,9 +105,11 @@ function getComparator<Key extends keyof any>(
 }
 
 function UsersListView() {
-  const userService = UsersService.getInstance();
+  const usersService = UsersService.getInstance();
+  const hobbiesService = HobbiesService.getInstance();
 
-  const [data, isLoading] = useLoading<User[]>(new Array<User>(), () => userService.getUsers());
+  const [users, isLoadingUsers] = useLoading<User[]>(new Array<User>(), () => usersService.getUsers());
+  const [hobbies, isLoadingHobbies] = useLoading<Hobby[]>(new Array<Hobby>(), () => hobbiesService.getHobbies());
 
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof User>('id');
@@ -111,7 +123,7 @@ function UsersListView() {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelecteds = data.map((n) => n.id);
+      const newSelecteds = users.map((n) => n.id);
       setSelected(newSelecteds);
       return;
     }
@@ -137,14 +149,14 @@ function UsersListView() {
 
   const isSelected = (id: string) => selected.indexOf(id) !== -1;
 
-  return isLoading ? (
+  return isLoadingUsers ? (
     <UsersListSkeleton />
   ) : (
-    <Box sx={{ width: '100%', mt: 5 }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
+    <Box sx={{ width: '100%', mt: 2 }}>
+      <Paper sx={{ width: '100%', mb: 2, overflow: 'hidden' }}>
         <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
-          <Table aria-labelledby="tableTitle">
+        <TableContainer sx={{ maxHeight: 760 }}>
+          <Table stickyHeader aria-labelledby="tableTitle" size="small">
             <EnhancedTableHead<User>
               cells={userCells}
               numSelected={selected.length}
@@ -152,10 +164,10 @@ function UsersListView() {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={data.length}
+              rowCount={users.length}
             />
             <TableBody>
-              {data
+              {users
                 .slice()
                 .sort(getComparator(order, orderBy))
                 .map((row, index) => {
@@ -190,7 +202,21 @@ function UsersListView() {
                       <TableCell align="left">{row.phoneNumber}</TableCell>
                       <TableCell align="left">{row.address}</TableCell>
                       <TableCell align="left">{row.dateOfBirth}</TableCell>
-                      <TableCell align="left">{row.hobbies.join(', ')}</TableCell>
+                      <TableCell align="left">
+                        {isLoadingHobbies ? (
+                          <Skeleton animation="wave" height={100} />
+                        ) : (
+                          row.hobbies.map((hobby) => (
+                            <Chip
+                              sx={{ margin: 0.2 }}
+                              color="success"
+                              variant="outlined"
+                              size="small"
+                              label={hobbies.find((h) => h.id === hobby)?.name}
+                            />
+                          ))
+                        )}
+                      </TableCell>
                     </TableRow>
                   );
                 })}
