@@ -11,74 +11,9 @@ import { User } from 'services/models/User';
 import { Cell, Order } from 'components/EnhancedTableHeadCell';
 import { EnhancedTableHead } from 'components/EnhancedTableHead';
 import EnhancedTableToolbar from 'components/EnhancedTableToolbar';
-
-const rows = [
-  new User({
-    id: '6193ce0799647b845f24e587',
-    name: 'Kaufman',
-    lastName: 'Britt',
-    email: 'wahprocuradeumbbn@nonise.com',
-    age: 30,
-    gender: 'male',
-    phoneNumber: '+1 (922) 480-3988',
-    address: '370 Rose Street, Neibert, Oregon, 6286',
-    dateOfBirth: '1994-05-21',
-    hobbies: ['6193ce84e806ff3cbc4521fe', '6193ce846eed7ffbaa5a26b2', '6193ce84e3ef251bb52871b6']
-  }),
-  new User({
-    id: '6193ce074efc3e500843eb80',
-    name: 'Cecelia',
-    lastName: 'Ortega',
-    email: 'qakram.mousta@outlook.sbs',
-    age: 21,
-    gender: 'female',
-    phoneNumber: '+1 (941) 535-2271',
-    address: '472 Schweikerts Walk, Clara, Maine, 9933',
-    dateOfBirth: '1990-04-04',
-    hobbies: ['6193ce843cd350c9a18b5b32']
-  }),
-  new User({
-    id: '6193ce07272dbb6ca898def0',
-    name: 'Cabrera',
-    lastName: 'Stokes',
-    email: 'tcherkihaddadar@fiikra.tk',
-    age: 21,
-    gender: 'male',
-    phoneNumber: '+1 (999) 497-2758',
-    address: '703 Lexington Avenue, Manitou, North Carolina, 3497',
-    dateOfBirth: '1996-05-25',
-    hobbies: [
-      '6193ce84e806ff3cbc4521fe',
-      '6193ce84fddf0ea59cd715cc',
-      '6193ce843502e8f81392a69c',
-      '6193ce8499ba67b92d63c9be'
-    ]
-  }),
-  new User({
-    id: '6193ce07b8fba748ef8131cb',
-    name: 'Adkins',
-    lastName: 'Moody',
-    email: 'xsalemabdul@nroeor.com',
-    age: 32,
-    gender: 'male',
-    phoneNumber: '+1 (972) 508-2167',
-    address: '883 Adelphi Street, Graball, Michigan, 4021',
-    dateOfBirth: '1988-08-03',
-    hobbies: ['6193ce840b1d30d78d2e1413', '6193ce8404766c242ca1f3c4']
-  }),
-  new User({
-    id: '6193ce0727ef5f8ba1e24781',
-    name: 'Frieda',
-    lastName: 'Morris',
-    email: 'csherry.ahm@hdtniudn.com',
-    age: 39,
-    gender: 'female',
-    phoneNumber: '+1 (872) 585-3698',
-    address: '759 Alton Place, Wakulla, New Jersey, 2365',
-    dateOfBirth: '1990-10-31',
-    hobbies: ['6193ce8497316f30f74b3417', '6193ce84afce6bc5d4a85896']
-  })
-];
+import useLoading from 'hooks/useLoading';
+import UsersService from 'services/UsersService';
+import UsersListSkeleton from 'components/skeletons/UsersListSkeleton';
 
 const userCells: readonly Cell<User>[] = [
   {
@@ -160,6 +95,10 @@ function getComparator<Key extends keyof any>(
 }
 
 function UsersListView() {
+  const userService = UsersService.getInstance();
+
+  const [data, isLoading] = useLoading<User[]>(new Array<User>(), () => userService.getUsers());
+
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof User>('id');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
@@ -172,7 +111,7 @@ function UsersListView() {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.id);
+      const newSelecteds = data.map((n) => n.id);
       setSelected(newSelecteds);
       return;
     }
@@ -198,7 +137,9 @@ function UsersListView() {
 
   const isSelected = (id: string) => selected.indexOf(id) !== -1;
 
-  return (
+  return isLoading ? (
+    <UsersListSkeleton />
+  ) : (
     <Box sx={{ width: '100%', mt: 5 }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
         <EnhancedTableToolbar numSelected={selected.length} />
@@ -211,10 +152,10 @@ function UsersListView() {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={data.length}
             />
             <TableBody>
-              {rows
+              {data
                 .slice()
                 .sort(getComparator(order, orderBy))
                 .map((row, index) => {

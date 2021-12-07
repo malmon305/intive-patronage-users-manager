@@ -1,5 +1,4 @@
 import BaseService from './BaseService';
-import Page from './models/Page';
 import { IUser, User } from './models/User';
 
 class UsersService extends BaseService {
@@ -7,19 +6,10 @@ class UsersService extends BaseService {
     super('http://localhost:3001/users/');
   }
 
-  public async getUsers(pageNumber: number, pageCount: number): Promise<Page<User>> {
-    const response = await this.get(`?_page=${pageNumber}&_limit=${pageCount}`);
-
-    const page = new Page<User>();
+  public async getUsers(): Promise<User[]> {
+    const response = await this.get('');
     const data = (await response.json()) as IUser[];
-
-    page.items = data.map((userData) => new User(userData));
-
-    if (response.headers.has('X-Total-Count')) {
-      page.totalCount = parseInt(response.headers.get('X-Total-Count')!, 10);
-    }
-
-    return page;
+    return data.map((userData) => new User(userData));
   }
 
   public async getUser(id: string): Promise<User> {

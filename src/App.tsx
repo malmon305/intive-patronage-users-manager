@@ -6,6 +6,7 @@ import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import CssBaseline from '@mui/material/CssBaseline';
 import UserEditView from 'views/UserEditView';
 import UsersListView from 'views/UsersListView';
+import { SnackbarProvider } from 'notistack';
 
 const theme = createTheme({
   palette: {
@@ -17,19 +18,25 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <div className="App">
-        <Router>
-          <Header />
-          <Container maxWidth="xl">
-            <Suspense fallback={<div>Loading...</div>}>
-              <Routes>
-                <Route path="/" element={<UsersListView />} />
-                <Route path="/edit" element={<UserEditView />} />
-              </Routes>
-            </Suspense>
-          </Container>
-        </Router>
-      </div>
+      <SnackbarProvider
+        maxSnack={1}
+        autoHideDuration={null}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <div className="App">
+          <Router>
+            <Header />
+            <Container maxWidth="xl">
+              <Suspense fallback={<div>Loading...</div>}>
+                <Routes>
+                  <Route path="/" element={<UsersListView />} />
+                  <Route path="/edit" element={<UserEditView />} />
+                </Routes>
+              </Suspense>
+            </Container>
+          </Router>
+        </div>
+      </SnackbarProvider>
     </ThemeProvider>
   );
 }
