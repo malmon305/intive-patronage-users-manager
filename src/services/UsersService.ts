@@ -1,4 +1,5 @@
 import BaseService from './BaseService';
+import HobbiesService from './HobbiesService';
 import { IUser, User } from './models/User';
 
 class UsersService extends BaseService {
@@ -7,15 +8,21 @@ class UsersService extends BaseService {
   }
 
   public async getUsers(): Promise<User[]> {
+    const hobbiesService = HobbiesService.getInstance();
+    const hobbies = await hobbiesService.getHobbies();
+
     const response = await this.get('');
     const data = (await response.json()) as IUser[];
-    return data.map((userData) => new User(userData));
+    return data.map((userData) => new User(userData, hobbies));
   }
 
   public async getUser(id: string): Promise<User> {
+    const hobbiesService = HobbiesService.getInstance();
+    const hobbies = await hobbiesService.getHobbies();
+
     const response = await this.get(`${id}`);
     const data = (await response.json()) as IUser;
-    return new User(data);
+    return new User(data, hobbies);
   }
 
   public async deleteUser(id: string): Promise<boolean> {

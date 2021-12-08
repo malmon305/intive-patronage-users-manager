@@ -1,3 +1,5 @@
+import Hobby from './Hobby';
+
 export interface IUser {
   id: string;
   name: string;
@@ -12,7 +14,7 @@ export interface IUser {
 }
 
 export class User {
-  constructor(user: IUser) {
+  constructor(user: IUser, hobbies: Hobby[]) {
     this.id = user.id;
     this.name = `${user.name} ${user.lastName}`;
     this.email = user.email;
@@ -21,7 +23,8 @@ export class User {
     this.phoneNumber = user.phoneNumber;
     this.address = user.address;
     this.dateOfBirth = user.dateOfBirth;
-    this.hobbies = user.hobbies;
+    this.hobbiesIds = user.hobbies;
+    this.hobbies = user.hobbies.map((id) => hobbies.find((h) => h.id === id)?.name!);
   }
 
   public id: string;
@@ -32,5 +35,6 @@ export class User {
   public phoneNumber: string;
   public address: string;
   public dateOfBirth: string;
+  public hobbiesIds: string[];
   public hobbies: string[];
 }

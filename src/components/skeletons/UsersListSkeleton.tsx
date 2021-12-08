@@ -2,7 +2,7 @@ import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton, TableContainer, TableBody, TableCell, TableRow, Skeleton, Box, Paper, Table } from '@mui/material';
-import EnhancedTableToolbar from 'components/EnhancedTableToolbar';
+// import EnhancedTableToolbar from 'components/EnhancedTableToolbar';
 
 interface TableCellSkeletonProps {
   width?: number;
@@ -21,7 +21,7 @@ function UsersListView() {
   return (
     <Box sx={{ width: '100%', mt: 5 }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar numSelected={0} />
+        {/* <EnhancedTableToolbar numSelected={0} /> */}
         <TableContainer>
           <Table>
             <TableBody>

@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { Toolbar, alpha, Typography, Tooltip, IconButton } from '@mui/material';
+import { Toolbar, alpha, Typography, Tooltip, IconButton, InputAdornment, TextField, Stack } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { red } from '@mui/material/colors';
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { numSelected, onDeleteClick } = props;
+  const { numSelected, onDeleteClick, isFiltering, setIsFiltering, filterValue, setFilterValue } = props;
 
   return (
     <Toolbar
@@ -34,9 +35,32 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         </Tooltip>
       ) : (
         <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
+          {isFiltering ? (
+            <Stack direction="row" spacing={1}>
+              <TextField
+                autoFocus
+                label="Filter by name, email, age, address, date of birth, hobby"
+                variant="standard"
+                value={filterValue}
+                onChange={(e) => setFilterValue(e.target.value)}
+                sx={{ minWidth: 310 }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  )
+                }}
+              />
+              <IconButton onClick={() => setIsFiltering(false)}>
+                <FilterListIcon />
+              </IconButton>
+            </Stack>
+          ) : (
+            <IconButton onClick={() => setIsFiltering(true)}>
+              <FilterListIcon />
+            </IconButton>
+          )}
         </Tooltip>
       )}
     </Toolbar>
@@ -45,11 +69,11 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
-  onDeleteClick?: React.MouseEventHandler<SVGSVGElement>;
+  onDeleteClick: React.MouseEventHandler<SVGSVGElement>;
+  isFiltering: boolean;
+  setIsFiltering: React.Dispatch<React.SetStateAction<boolean>>;
+  filterValue: string;
+  setFilterValue: React.Dispatch<React.SetStateAction<string>>;
 }
-
-EnhancedTableToolbar.defaultProps = {
-  onDeleteClick: () => {}
-};
 
 export default EnhancedTableToolbar;
