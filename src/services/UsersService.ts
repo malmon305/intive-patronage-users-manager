@@ -18,6 +18,16 @@ class UsersService extends BaseService {
     return new User(data);
   }
 
+  public async deleteUser(id: string): Promise<boolean> {
+    const response = await this.delete(`${id}`);
+    return response.ok;
+  }
+
+  public async deleteUsers(ids: readonly string[]): Promise<boolean> {
+    const results = await Promise.all(ids.map((id) => this.deleteUser(id)));
+    return results.every((result) => result);
+  }
+
   // TODO Add deleteUser, createUser, updateUser
 
   private static instance: UsersService;

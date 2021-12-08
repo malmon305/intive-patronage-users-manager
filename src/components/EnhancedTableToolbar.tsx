@@ -5,7 +5,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { red } from '@mui/material/colors';
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { numSelected } = props;
+  const { numSelected, onDeleteClick } = props;
 
   return (
     <Toolbar
@@ -29,7 +29,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
       {numSelected > 0 ? (
         <Tooltip title="Delete">
           <IconButton>
-            <DeleteIcon sx={{ color: red[600] }} />
+            <DeleteIcon sx={{ color: red[600] }} onClick={onDeleteClick} />
           </IconButton>
         </Tooltip>
       ) : (
@@ -45,6 +45,11 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  onDeleteClick?: React.MouseEventHandler<SVGSVGElement>;
 }
+
+EnhancedTableToolbar.defaultProps = {
+  onDeleteClick: () => {}
+};
 
 export default EnhancedTableToolbar;

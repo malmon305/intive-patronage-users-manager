@@ -16,7 +16,18 @@ import UsersService from 'services/UsersService';
 import UsersListSkeleton from 'components/skeletons/UsersListSkeleton';
 import HobbiesService from 'services/HobbiesService';
 import Hobby from 'services/models/Hobby';
-import { Chip, IconButton, Skeleton, Tooltip } from '@mui/material';
+import {
+  Button,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  IconButton,
+  Skeleton,
+  Tooltip
+} from '@mui/material';
 import { blue, red } from '@mui/material/colors';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -119,12 +130,29 @@ function UsersListView() {
   const usersService = UsersService.getInstance();
   const hobbiesService = HobbiesService.getInstance();
 
-  const [users, isLoadingUsers] = useLoading<User[]>(new Array<User>(), () => usersService.getUsers());
-  const [hobbies, isLoadingHobbies] = useLoading<Hobby[]>(new Array<Hobby>(), () => hobbiesService.getHobbies());
-
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof User>('id');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
+  const [isDeleteOpen, setDeleteOpen] = React.useState(false);
+
+  const [hobbies, isLoadingHobbies] = useLoading<Hobby[]>(new Array<Hobby>(), () => hobbiesService.getHobbies());
+  const [users, isLoadingUsers, setIsLoadingUsers, reloadUsers] = useLoading<User[]>(new Array<User>(), () => {
+    setSelected([]);
+    return usersService.getUsers();
+  });
+
+  const handleDeleteOpen = () => {
+    setDeleteOpen(true);
+  };
+
+  const handleDelete = async () => {
+    setDeleteOpen(false);
+    setIsLoadingUsers(true);
+
+    await usersService.deleteUsers(selected);
+
+    reloadUsers();
+  };
 
   const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof User) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -163,91 +191,116 @@ function UsersListView() {
   return isLoadingUsers ? (
     <UsersListSkeleton />
   ) : (
-    <Box sx={{ width: '100%', mt: 2 }}>
-      <Paper sx={{ width: '100%', mb: 2, overflow: 'hidden' }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer sx={{ maxHeight: 760 }}>
-          <Table stickyHeader aria-labelledby="tableTitle" size="small">
-            <EnhancedTableHead<User>
-              cells={userCells}
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={(event, property) => handleRequestSort(event, property as keyof User)}
-              rowCount={users.length}
-            />
-            <TableBody>
-              {users
-                .slice()
-                .sort(getComparator(order, orderBy))
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+    <>
+      <Box sx={{ width: '100%', mt: 2 }}>
+        <Paper sx={{ width: '100%', mb: 2, overflow: 'hidden' }}>
+          <EnhancedTableToolbar numSelected={selected.length} onDeleteClick={() => handleDeleteOpen()} />
+          <TableContainer sx={{ maxHeight: 760 }}>
+            <Table stickyHeader aria-labelledby="tableTitle" size="small">
+              <EnhancedTableHead<User>
+                cells={userCells}
+                numSelected={selected.length}
+                order={order}
+                orderBy={orderBy}
+                onSelectAllClick={handleSelectAllClick}
+                onRequestSort={(event, property) => handleRequestSort(event, property as keyof User)}
+                rowCount={users.length}
+              />
+              <TableBody>
+                {users
+                  .slice()
+                  .sort(getComparator(order, orderBy))
+                  .map((row, index) => {
+                    const isItemSelected = isSelected(row.id);
+                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.id)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.id}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            'aria-labelledby': labelId
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell component="th" id={labelId} scope="row" padding="none">
-                        {row.name}
-                      </TableCell>
-                      <TableCell>{row.email}</TableCell>
-                      <TableCell align="right">{row.age}</TableCell>
-                      <TableCell>{row.gender}</TableCell>
-                      <TableCell>{row.phoneNumber}</TableCell>
-                      <TableCell>{row.address}</TableCell>
-                      <TableCell>{row.dateOfBirth}</TableCell>
-                      <TableCell>
-                        {isLoadingHobbies ? (
-                          <Skeleton animation="wave" height={100} />
-                        ) : (
-                          row.hobbies.map((hobby) => (
-                            <Chip
-                              sx={{ margin: 0.2 }}
-                              color="success"
-                              variant="outlined"
-                              size="small"
-                              label={hobbies.find((h) => h.id === hobby)?.name}
-                            />
-                          ))
-                        )}
-                      </TableCell>
-                      <TableCell align="right">
-                        <Tooltip title="Edit User">
-                          <IconButton aria-label="edit">
-                            <EditIcon sx={{ color: blue[600] }} />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Delete User">
-                          <IconButton aria-label="delete">
-                            <DeleteIcon sx={{ color: red[600] }} />
-                          </IconButton>
-                        </Tooltip>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
-    </Box>
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) => handleClick(event, row.id)}
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={row.id}
+                        selected={isItemSelected}
+                      >
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            color="primary"
+                            checked={isItemSelected}
+                            inputProps={{
+                              'aria-labelledby': labelId
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell component="th" id={labelId} scope="row" padding="none">
+                          {row.name}
+                        </TableCell>
+                        <TableCell>{row.email}</TableCell>
+                        <TableCell align="right">{row.age}</TableCell>
+                        <TableCell>{row.gender}</TableCell>
+                        <TableCell>{row.phoneNumber}</TableCell>
+                        <TableCell>{row.address}</TableCell>
+                        <TableCell>{row.dateOfBirth}</TableCell>
+                        <TableCell>
+                          {isLoadingHobbies ? (
+                            <Skeleton animation="wave" height={100} />
+                          ) : (
+                            row.hobbies.map((hobby) => (
+                              <Chip
+                                sx={{ margin: 0.2 }}
+                                color="success"
+                                variant="outlined"
+                                size="small"
+                                label={hobbies.find((h) => h.id === hobby)?.name}
+                              />
+                            ))
+                          )}
+                        </TableCell>
+                        <TableCell align="right">
+                          <Tooltip title="Edit User">
+                            <IconButton aria-label="edit">
+                              <EditIcon sx={{ color: blue[600] }} />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Delete User">
+                            <IconButton aria-label="delete" onClick={() => handleDeleteOpen()}>
+                              <DeleteIcon sx={{ color: red[600] }} />
+                            </IconButton>
+                          </Tooltip>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Paper>
+      </Box>
+      <Dialog
+        open={isDeleteOpen}
+        onClose={() => setDeleteOpen(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Are you sure you want to delete user(s)?</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {selected.length === 1
+              ? `Following user is going to be deleted: ${users.find((u) => u.id === selected[0])?.name}`
+              : `Following users are going to be deleted: ${selected
+                  .map((id) => users.find((u) => u.id === id)?.name)
+                  .join(', ')}`}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteOpen(false)}>Cancel</Button>
+          <Button onClick={() => handleDelete()} autoFocus color="error">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 }
 
