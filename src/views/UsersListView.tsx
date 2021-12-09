@@ -29,6 +29,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UsersListSkeleton from 'components/skeletons/UsersListSkeleton';
 import { Link } from 'react-router-dom';
+import { format } from 'date-fns';
 
 const userCells: readonly Cell<User>[] = [
   {
@@ -151,9 +152,9 @@ function UsersListView() {
           ? true
           : includesFilterValue(u.name) ||
             includesFilterValue(u.email) ||
-            includesFilterValue(u.age.toString()) ||
+            includesFilterValue(u.age?.toString() ?? '') ||
             includesFilterValue(u.address) ||
-            includesFilterValue(u.dateOfBirth) ||
+            includesFilterValue(u.dateOfBirth.toLocaleDateString()) ||
             u.hobbies.some((hobby) => includesFilterValue(hobby))
       )
     );
@@ -267,7 +268,7 @@ function UsersListView() {
                           <TableCell>{row.gender}</TableCell>
                           <TableCell>{row.phoneNumber}</TableCell>
                           <TableCell>{row.address}</TableCell>
-                          <TableCell>{row.dateOfBirth}</TableCell>
+                          <TableCell>{format(row.dateOfBirth, 'yyyy-MM-dd')}</TableCell>
                           <TableCell>
                             {row.hobbies.map((hobby) => (
                               <Chip

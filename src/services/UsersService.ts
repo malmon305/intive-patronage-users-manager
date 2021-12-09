@@ -25,6 +25,26 @@ class UsersService extends BaseService {
     return new User(data, hobbies);
   }
 
+  public async createUser(user: User): Promise<string> {
+    const hobbiesService = HobbiesService.getInstance();
+    const hobbies = await hobbiesService.getHobbies();
+
+    const newUser: IUser = User.toAny(user, hobbies);
+
+    const response = await this.post('', newUser);
+    const data = await response.json();
+    return data.id;
+  }
+
+  public async updateUser(user: User): Promise<void> {
+    const hobbiesService = HobbiesService.getInstance();
+    const hobbies = await hobbiesService.getHobbies();
+
+    const updatedUser: IUser = User.toAny(user, hobbies);
+
+    await this.put(`${updatedUser.id}`, updatedUser);
+  }
+
   public async deleteUser(id: string): Promise<boolean> {
     const response = await this.delete(`${id}`);
     return response.ok;
@@ -34,8 +54,6 @@ class UsersService extends BaseService {
     const results = await Promise.all(ids.map((id) => this.deleteUser(id)));
     return results.every((result) => result);
   }
-
-  // TODO Add deleteUser, createUser, updateUser
 
   private static instance: UsersService;
 

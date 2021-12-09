@@ -29,7 +29,7 @@ function Header() {
 
   return (
     <AppBar position="static">
-      <Container>
+      <Container maxWidth="xl">
         <Toolbar>
           <Box display="flex" flexGrow={1} alignItems="center">
             <Typography variant="h6" noWrap>
