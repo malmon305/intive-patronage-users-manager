@@ -30,7 +30,8 @@ function App() {
               <Suspense fallback={<div>Loading...</div>}>
                 <Routes>
                   <Route path="/" element={<UsersListView />} />
-                  <Route path="/edit" element={<UserEditView />} />
+                  <Route path="/:id" element={<UserEditView />} />
+                  <Route path="/new" element={<UserEditView />} />
                 </Routes>
               </Suspense>
             </Container>

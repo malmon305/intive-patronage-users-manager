@@ -1,8 +1,21 @@
 import * as React from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { IconButton, TableContainer, TableBody, TableCell, TableRow, Skeleton, Box, Paper, Table } from '@mui/material';
-// import EnhancedTableToolbar from 'components/EnhancedTableToolbar';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import {
+  Toolbar,
+  Typography,
+  IconButton,
+  TableContainer,
+  TableBody,
+  TableCell,
+  TableRow,
+  Skeleton,
+  Box,
+  Paper,
+  Table,
+  Tooltip
+} from '@mui/material';
 
 interface TableCellSkeletonProps {
   width?: number;
@@ -19,9 +32,23 @@ TableCellSkeleton.defaultProps = {
 
 function UsersListView() {
   return (
-    <Box sx={{ width: '100%', mt: 5 }}>
+    <Box sx={{ width: '100%', mt: 2 }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        {/* <EnhancedTableToolbar numSelected={0} /> */}
+        <Toolbar
+          sx={{
+            pl: { sm: 2 },
+            pr: { xs: 1, sm: 1 }
+          }}
+        >
+          <Typography variant="h6" id="tableTitle" component="div" sx={{ flex: '1 1 100%' }}>
+            Users
+          </Typography>
+          <Tooltip title="">
+            <IconButton disabled>
+              <FilterListIcon />
+            </IconButton>
+          </Tooltip>
+        </Toolbar>
         <TableContainer>
           <Table>
             <TableBody>

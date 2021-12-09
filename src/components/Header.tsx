@@ -21,7 +21,7 @@ function Header() {
     },
     {
       label: 'NEW USER',
-      href: '/edit'
+      href: '/new'
     }
   ];
 

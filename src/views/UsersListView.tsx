@@ -28,6 +28,7 @@ import { blue, red } from '@mui/material/colors';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UsersListSkeleton from 'components/skeletons/UsersListSkeleton';
+import { Link } from 'react-router-dom';
 
 const userCells: readonly Cell<User>[] = [
   {
@@ -280,7 +281,7 @@ function UsersListView() {
                           </TableCell>
                           <TableCell align="right">
                             <Tooltip title="Edit User">
-                              <IconButton aria-label="edit">
+                              <IconButton aria-label="edit" component={Link} to={`/${row.id}`}>
                                 <EditIcon sx={{ color: blue[600] }} />
                               </IconButton>
                             </Tooltip>
