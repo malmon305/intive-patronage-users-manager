@@ -30,8 +30,8 @@ function App() {
               <Suspense fallback={<div>Loading...</div>}>
                 <Routes>
                   <Route path="/" element={<UsersListView />} />
-                  <Route path="/:id" element={<UserEditView />} />
-                  <Route path="/new" element={<UserEditView />} />
+                  <Route path="/:id" element={<UserEditView key={Math.random()} />} />
+                  <Route path="/new" element={<UserEditView key={Math.random()} />} />
                 </Routes>
               </Suspense>
             </Container>

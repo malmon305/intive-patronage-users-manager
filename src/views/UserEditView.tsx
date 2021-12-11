@@ -10,7 +10,8 @@ import {
   Chip,
   Button,
   Grid,
-  Typography
+  Typography,
+  FormHelperText
 } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import { Controller, useForm } from 'react-hook-form';
@@ -85,7 +86,12 @@ function UserEditView() {
     navigate('/');
   };
 
-  const { handleSubmit, reset, control } = useForm<User>();
+  const {
+    handleSubmit,
+    reset,
+    control,
+    formState: { errors, isDirty, isValid }
+  } = useForm<User>({ mode: 'onBlur' });
   const onSubmit = (data: User) => {
     if (isInCreatemode) {
       onCreateSubmit(data);
@@ -99,7 +105,7 @@ function UserEditView() {
   }, [isLoadingUser]);
 
   return isLoadingUser ? (
-    <UserEditViewSkeleton />
+    <UserEditViewSkeleton id={id} />
   ) : (
     <form>
       <Box sx={{ flexGrow: 1 }}>
@@ -111,10 +117,37 @@ function UserEditView() {
           </Grid>
           <Grid item container spacing={2} flexDirection="column">
             <Grid item xs={12} sm={6}>
-              <FormTextField name="name" label="Name" control={control} />
-              <FormTextField name="email" label="Email" control={control} />
+              <FormTextField
+                name="name"
+                label="Name"
+                control={control}
+                rules={{ required: true }}
+                error={errors.name}
+                errorText="Name is required"
+              />
+              <FormTextField
+                name="email"
+                label="Email"
+                control={control}
+                rules={{ required: true }}
+                error={errors.email}
+                errorText="Email is required"
+              />
               <FormDatePicker name="dateOfBirth" label="Date of birth" control={control} />
-              <FormTextField name="age" label="Age" control={control} />
+              <FormTextField
+                name="age"
+                label="Age"
+                control={control}
+                rules={{
+                  required: true,
+                  message: 'Age is required',
+                  min: { value: 1, message: 'Age value must be higher or equal to 1' },
+                  max: { value: 150, message: 'Age value must be smaller than 150' }
+                }}
+                error={errors.age}
+                errorText={errors.age?.message}
+                type="number"
+              />
               <FormSelect name="gender" label="Gender" control={control} />
               <FormTextField name="phoneNumber" label="Phone number" control={control} />
               <FormTextField name="address" label="Address" control={control} />
@@ -125,12 +158,16 @@ function UserEditView() {
               ) : (
                 <Controller
                   name="hobbies"
+                  rules={{ required: true, validate: (value) => value.length !== 0 }}
                   control={control}
-                  render={({ field: { onChange, value } }) => (
+                  render={({ field: { onChange, onBlur, value } }) => (
                     <FormControl fullWidth margin="normal">
                       <InputLabel id="hobbies-label">Hobbies</InputLabel>
 
                       <Select
+                        onClose={onBlur}
+                        onBlur={onBlur}
+                        error={!!errors.hobbies}
                         labelId="hobbies-label"
                         multiple
                         value={value}
@@ -157,6 +194,7 @@ function UserEditView() {
                           </MenuItem>
                         ))}
                       </Select>
+                      <FormHelperText>{errors.hobbies ? 'At least one hobby should be selected' : null}</FormHelperText>
                     </FormControl>
                   )}
                 />
@@ -167,14 +205,22 @@ function UserEditView() {
           <Grid container item xs={12} justifyContent="flex-end">
             <Button
               onClick={handleSubmit(onSubmit)}
+              type="submit"
               variant="contained"
               color="success"
               startIcon={<SaveIcon />}
               sx={{ marginRight: 1 }}
+              disabled={!isDirty || !isValid}
             >
               SAVE
             </Button>
-            <Button onClick={() => reset()} color="error" variant="contained" sx={{ marginRight: 1 }}>
+            <Button
+              disabled={!isDirty}
+              onClick={() => reset()}
+              color="error"
+              variant="contained"
+              sx={{ marginRight: 1 }}
+            >
               RESET
             </Button>
             <Button variant="contained" component={Link} to="/" sx={{ marginRight: 1 }}>
